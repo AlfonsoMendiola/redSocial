@@ -1,0 +1,14 @@
+# Dependencias instaladas
+/node_modules
+
+# Archivos generados
+npm-debug.log
+yarn-error.log
+coverage
+
+# Archivos sensibles
+.env
+
+# Archivos de construcción
+/build
+/dist
