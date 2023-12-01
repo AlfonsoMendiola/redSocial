@@ -10,14 +10,6 @@ export default class roles extends Model {
       allowNull: false,
       primaryKey: true
     },
-    id_usuario: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      references: {
-        model: 'usuarios',
-        key: 'id'
-      }
-    },
     nombre: {
       type: DataTypes.STRING(50),
       allowNull: false
@@ -29,6 +21,11 @@ export default class roles extends Model {
     permisos: {
       type: DataTypes.JSON,
       allowNull: false
+    },
+    creado_en: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP')
     }
   }, {
     sequelize,
@@ -41,13 +38,6 @@ export default class roles extends Model {
         using: "BTREE",
         fields: [
           { name: "id" },
-        ]
-      },
-      {
-        name: "id_usuario",
-        using: "BTREE",
-        fields: [
-          { name: "id_usuario" },
         ]
       },
     ]

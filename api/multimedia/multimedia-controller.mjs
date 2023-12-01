@@ -16,11 +16,11 @@ export const multimediaController = {
     // para consultar un archivo por url
     getArchivo: async(req, res) => {
         try {
-            const filePath = path.join(__dirname, `../uploads/${req.headers['usuario_id']}/${req.params.nombre}`);
+            const filePath = path.join(__dirname, `../../uploads/${req.headers['usuario_id']}/${req.params.nombre}`);
             await fs.access(filePath);
             res.sendFile(filePath);
         } catch (error) {
-            const noImageFilePath = path.join(__dirname, '../assets/no-image.jpg');
+            const noImageFilePath = path.join(__dirname, '../../assets/no-image.jpg');
             if (error.code == 'ENOENT') return res.sendFile(noImageFilePath);
             return res.status(400).json({error});
         }
