@@ -1,69 +1,70 @@
-import fs from 'fs/promises'
-import path from 'path'
-import { fileURLToPath } from 'url'
 
-import { initModels } from '../../models/init-models.mjs'
-import { dbSequelize } from '../../database/config.mjs'
+import { initModels } from '../../models/init-models.mjs';
+import { dbSequelize } from '../../database/config.mjs';
 
-const { usuarios: Usuarios } = initModels(dbSequelize);
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-
+const { multimedia } = initModels(dbSequelize);
 
 export const multimediaController = {
-    // para consultar un archivo por url
-    getArchivo: async(req, res) => {
+    post: async(req, res) => {
         try {
-            const filePath = path.join(__dirname, `../../uploads/${req.headers['usuario_id']}/${req.params.nombre}`);
-            await fs.access(filePath);
-            res.sendFile(filePath);
+            const data = await multimedia.create({
+                ...req.body,
+            });
+            res.json(data);
         } catch (error) {
-            const noImageFilePath = path.join(__dirname, '../../assets/no-image.jpg');
-            if (error.code == 'ENOENT') return res.sendFile(noImageFilePath);
-            return res.status(400).json({error});
+            console.log(error);
+            return res.status(500).json(error);
+        }
+    },
+    get: async(req, res) => {
+        try {
+            const data = await multimedia.findByPk(req.params.id);
+            res.json(data);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(error);
+        }
+    },
+    gets: async(req, res) => {
+        try {
+            if(!req.query.page || req.query.page == '0') return res.status(400).json({error: `parametro page mayor a 0 obligatorio`})
+    
+            const {count:total, rows: data} = await multimedia.findAndCountAll({
+                attributes:{ exclude: ['pass','tipoUsuario'] },
+                limit: 5,
+                offset: ( Number(req.query.page) - 1 ) * 5,
+                order: [ ['id', 'DESC'] ]
+            })
+            res.json({ total, pages: Math.ceil( total / 5 ), data });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json(error);
         }
     },
 
-    postMultimedia: async(req, res) => {
+    update: async(req, res) => {
         try {
-            res.json('todo bien');
+            // const {body} = req
+            const data = await multimedia.findByPk(req.params.id);
+            //tu logica
+            //await data.save();
+            res.json(data);
         } catch (error) {
             console.log(error);
-            return res.status(400).json(error);
+            return res.status(500).json(error);
         }
     },
-    getMultimedia: async(req, res) => {
+    
+    delete: async(req, res) => {
         try {
-            res.json('todo bien');
+            const data = await multimedia.destroy({
+                where: {id: req.params.id}
+            });
+            res.json(data)
         } catch (error) {
             console.log(error);
-            return res.status(400).json(error);
-        }
-    },
-    getMultimedias: async(req, res) => {
-        try {
-            res.json('todo bien');
-        } catch (error) {
-            console.log(error);
-            return res.status(400).json(error);
-        }
-    },
-    updateMultimedia: async(req, res) => {
-        try {
-            res.json('todo bien');
-        } catch (error) {
-            console.log(error);
-            return res.status(400).json(error);
-        }
-    },
-    deleteMultimedia: async(req, res) => {
-        try {
-            res.json('todo bien');
-        } catch (error) {
-            console.log(error);
-            return res.status(400).json(error);
+            return res.status(500).json(error);
         }
     },
 }
+    

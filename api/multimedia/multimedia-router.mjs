@@ -1,32 +1,40 @@
-import { Router } from "express";
 
-import { check } from "express-validator";
-import { validarCampos } from '../../middlewares/validar-campos.mjs'
-import { validarJWT } from '../../middlewares/validar-jwt.mjs'
+import { Router } from 'express';
 
-import { multimediaController } from "./multimedia-controller.mjs";
+import { multimediaController } from './multimedia-controller.mjs';
+import { check } from 'express-validator';
+import { validarCampos } from '../../middlewares/validar-campos.mjs';
+import { validarJWT } from '../../middlewares/validar-jwt.mjs';
 
-const multimediaRouter = Router()
-
-multimediaRouter.get('/:nombre', [
-    check('nombre', 'el nombre es obligatorio'),
-    validarJWT,
-    validarCampos
-], multimediaController.getArchivo)
+const multimediaRouter = Router();
 
 multimediaRouter.post('/', [
-], multimediaController.postMultimedia)
+    validarJWT,
+    //check('campo', 'El campo es obligatorio').not().isEmpty(),
+    validarCampos
+], multimediaController.post);
 
 multimediaRouter.get('/:id', [
-], multimediaController.getMultimedia)
+    validarJWT,
+    //check('id').custom(existeRegistroPorId),
+    validarCampos
+], multimediaController.get)
 
 multimediaRouter.get('/', [
-], multimediaController.getMultimedia)
+    validarJWT
+], multimediaController.gets)
 
 multimediaRouter.put('/:id', [
-], multimediaController.updateMultimedia)
+    validarJWT,
+    //check('id').custom(existeRegistroPorId),
+    validarCampos
+], multimediaController.update)
 
 multimediaRouter.delete('/:id', [
-], multimediaController.deleteMultimedia)
+    validarJWT,
+    //check('id').custom(existeRegistroPorId),
+    validarCampos
+], multimediaController.delete)
 
 export { multimediaRouter }
+    

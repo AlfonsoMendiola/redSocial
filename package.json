@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --env-file .env index.js",
+    "crearApi": "nodemon crearApi.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
